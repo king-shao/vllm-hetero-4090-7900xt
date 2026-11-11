@@ -23,6 +23,12 @@ export VLLM_DISABLE_PYNCCL=1
 export GLOO_SOCKET_IFNAME=lo
 ```
 
+Rank layout differs from the SHM plane: in the original Gloo experiment **rank 0
+was the 4090** (API server) and **rank 1 the 7900 XT** (headless), while the SHM
+scripts in this repo put the API on the ROCm side. Whichever you pick, the
+`--node-rank` values and the container you `docker exec` into must match; mixing
+them starts a server whose two halves disagree about the topology.
+
 plus the usual `vllm serve` flags:
 
 ```

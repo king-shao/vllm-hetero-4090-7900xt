@@ -17,7 +17,9 @@ CUDA_GPU="${CUDA_GPU:-0}"
 ROCM_GPU="${ROCM_GPU:-0}"
 CUDA_IMAGE="${CUDA_IMAGE:-vllm/vllm-openai:v0.27.1}"
 ROCM_IMAGE="${ROCM_IMAGE:-vllm/vllm-openai-rocm:v0.27.1}"
-SHM_SIZE="${SHM_SIZE:-16g}"
+# --ipc=host is not optional: POSIX shm lives in /dev/shm, and a per-container
+# tmpfs (the default, or whatever --shm-size grows it to) is a *private* mount.
+# Both ranks must map the host's /dev/shm, so --shm-size is deliberately unused.
 
 for c in "$CUDA_CONTAINER" "$ROCM_CONTAINER"; do
   docker rm -f "$c" >/dev/null 2>&1 || true
@@ -27,7 +29,7 @@ echo "starting $CUDA_CONTAINER ($CUDA_IMAGE, GPU $CUDA_GPU)"
 docker run -d --name "$CUDA_CONTAINER" \
   --gpus "\"device=$CUDA_GPU\"" \
   --ipc=host \
-  --shm-size="$SHM_SIZE" \
+
   -v "$MODEL_HOST":/models \
   -v "$ROOT":"$CONTAINER_ROOT" \
   --entrypoint /bin/bash \
@@ -39,7 +41,7 @@ docker run -d --name "$ROCM_CONTAINER" \
   --group-add video --group-add render \
   --security-opt seccomp=unconfined \
   --ipc=host \
-  --shm-size="$SHM_SIZE" \
+
   -v "$MODEL_HOST":/models \
   -v "$ROOT":"$CONTAINER_ROOT" \
   --entrypoint /bin/bash \
