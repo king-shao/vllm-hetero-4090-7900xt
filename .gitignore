@@ -1,0 +1,16 @@
+# Build artifacts
+native/*.so
+*.o
+__pycache__/
+*.pyc
+
+# vLLM checkout used only for diffing against 0.27.1 — not part of this repo
+vendor/
+
+# Run artifacts
+runs/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
