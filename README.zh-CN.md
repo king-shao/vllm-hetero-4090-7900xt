@@ -157,6 +157,7 @@ Apache-2.0。`patch/` 与 `native/` 是针对公开 vLLM `0.27.1` ABI 的独立�
 
 * vLLM `0.27.1` — <https://github.com/vllm-project/vllm/releases/tag/v0.27.1>
 * `docs/design.md` —— 环形队列布局、内存序、DMA 路径
+* `docs/experiment-log.md` —— 从双 4090 基线到 SHM 的四个阶段（含被放弃的方案）
 * `docs/reproduction.md` —— 按顺序的完整命令与判据
 * `docs/benchmarks.md` —— 全部实测表格
 * `docs/troubleshooting.md` —— `writev EFAULT`、不可变 bytes、残留共享内存

@@ -121,7 +121,7 @@ native/
   Makefile                builds libppshm.so and libppdma.so
 gloo-staging/             the earlier CPU-staging transport (reference)
 scripts/                  docker up, build, shm create, run, bench, teardown
-docs/                     design notes, reproduction log, benchmark tables
+docs/                     design, experiment log, reproduction, benchmarks
 vendor/vllm/              vLLM v0.27.1 checkout (git-ignored, for diffing)
 ```
 
@@ -162,6 +162,7 @@ Apache-2.0. `patch/` and `native/` are original work targeting the public vLLM
 
 * vLLM `0.27.1` — <https://github.com/vllm-project/vllm/releases/tag/v0.27.1>
 * `docs/design.md` — ring layout, memory ordering, DMA path
+* `docs/experiment-log.md` — the four stages that led here, including the abandoned one
 * `docs/reproduction.md` — full command log, in order
 * `docs/benchmarks.md` — every measured table
 * `docs/troubleshooting.md` — `writev EFAULT`, immutable-bytes pickle, stale rings
