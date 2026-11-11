@@ -71,6 +71,22 @@ Qwen2.5-3B-Instruct，BF16，`PP=2 TP=1`，分层 `18,18`，`max-model-len=4096`
 * `gcc`、`make`（在任一容器里编译即可）
 * 层数能被 PP 整除的模型（Qwen2.5-3B = 36 层）
 
+### vLLM 源码在哪？
+
+**不在这个仓库里。** 没有 fork 一份 vLLM 源码进来 —— 6365 个文件、约 110 MB，
+而且必须和你实际运行的镜像保持逐字节一致才有意义。运行时用官方
+`vllm/vllm-openai:v0.27.1` 镜像（或 `pip install vllm==0.27.1`），`patch/` 通过
+`PYTHONPATH` 注入，行为与改源码一致。
+
+需要源码做 diff、做自定义镜像、或移植到其他版本：
+
+```bash
+bash scripts/50-fetch-vllm.sh              # 拉到 vendor/vllm @ v0.27.1（已 gitignore）
+VLLM_REF=v0.28.0 bash scripts/50-fetch-vllm.sh
+```
+
+脚本会顺带校验 `docs/design.md` 里那四个挂载点是否还在原来的行号上。
+
 ## 快速开始
 
 ```bash
@@ -115,7 +131,7 @@ native/
   gpu_runtime_hook.c      批量 + 融合 D2H/H2D，跑在调用方 stream 上
   Makefile                产出 libppshm.so 与 libppdma.so
 gloo-staging/             早期 CPU 中转方案（留作对照与回退）
-scripts/                  docker 起容器、编译、建环、启动、压测、清理
+scripts/                  docker 起容器、编译、建环、启动、压测、清理、拉取 vLLM 源码
 docs/                     设计说明、复现步骤、全部压测数据、踩坑
 vendor/vllm/              vLLM v0.27.1 源码（已 gitignore，仅用于对照 diff）
 ```

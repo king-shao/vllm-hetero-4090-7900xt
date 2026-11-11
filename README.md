@@ -75,6 +75,25 @@ Concurrency sweep at `32,4`: 281.3 t/s @32 → 356.9 t/s @64 → **607.4 t/s @96
 * `gcc`, `make` (inside either container is fine)
 * A model with an even PP-friendly layer count (Qwen2.5-3B = 36 layers)
 
+### Where is vLLM itself?
+
+**Not in this repository.** There is no forked vLLM source tree here — 6365 files
+and ~110 MiB that would have to stay bit-identical to the image you actually run.
+The runtime is the official `vllm/vllm-openai:v0.27.1` image (or
+`pip install vllm==0.27.1`), and `patch/` injects through `PYTHONPATH`, so the
+patched behaviour is the same without vendoring the source.
+
+If you want the tree for diffing, for building a custom image, or to port the
+patch to another version:
+
+```bash
+bash scripts/50-fetch-vllm.sh              # -> vendor/vllm @ v0.27.1 (git-ignored)
+VLLM_REF=v0.28.0 bash scripts/50-fetch-vllm.sh
+```
+
+It also re-checks that the four hook points still exist at the line numbers
+`docs/design.md` claims.
+
 ## Quick start
 
 ```bash
@@ -120,7 +139,7 @@ native/
   gpu_runtime_hook.c      batched + fused D2H/H2D on the caller's stream
   Makefile                builds libppshm.so and libppdma.so
 gloo-staging/             the earlier CPU-staging transport (reference)
-scripts/                  docker up, build, shm create, run, bench, teardown
+scripts/                  docker up, build, shm create, run, bench, teardown, fetch vLLM
 docs/                     design, experiment log, reproduction, benchmarks
 vendor/vllm/              vLLM v0.27.1 checkout (git-ignored, for diffing)
 ```
